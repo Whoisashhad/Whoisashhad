@@ -95,16 +95,15 @@
 
         .social-media a {
             text-decoration: none;
-            color: #333;
             font-size: 24px;
-            transition: color 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .social-media a:hover {
-            color: #007BFF; /* Change color on hover */
+            transform: scale(1.1); /* Scale effect on hover */
         }
 
-        /* Icons (optional) */
+        /* Icons (with original colors) */
         .social-media a img {
             width: 24px;
             height: 24px;
@@ -117,9 +116,29 @@
             font-weight: bold;
             margin: 20px 0;
         }
+
+        /* Home button style */
+        #home-button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f0ad4e; /* Bootstrap warning color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #home-button:hover {
+            background-color: #ec971f; /* Darker shade on hover */
+        }
     </style>
 </head>
 <body>
+
+    <!-- Home Button -->
+    <button id="home-button" onclick="goHome()">Home</button> <!-- Added Home button -->
 
     <!-- Your landing page buttons -->
     <div id="landing-page" class="landing">
@@ -142,17 +161,14 @@
 
         <!-- Social media and contact section -->
         <div class="social-media">
-            <a href="mailto:example@example.com">
-                <img src="https://img.icons8.com/material-outlined/24/000000/new-post.png" alt="Email">
-                Email
+            <a href="mailto:ashhad@whoisashhad.in">
+                <img src="https://img.icons8.com/material/24/000000/new-post.png" alt="Email"> <!-- Original color -->
             </a>
-            <a href="https://www.instagram.com/yourprofile" target="_blank">
-                <img src="https://img.icons8.com/material-outlined/24/000000/instagram-new.png" alt="Instagram">
-                Instagram
+            <a href="https://www.instagram.com/syed_ashhad" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/24/000000/instagram-new.png" alt="Instagram"> <!-- Original color -->
             </a>
-            <a href="https://twitter.com/yourprofile" target="_blank">
-                <img src="https://img.icons8.com/material-outlined/24/000000/twitter.png" alt="Twitter">
-                Twitter
+            <a href="https://twitter.com/syedashhad" target="_blank">
+                <img src="https://img.icons8.com/material/24/000000/twitter.png" alt="Twitter"> <!-- Original color -->
             </a>
         </div>
     </div>
@@ -236,6 +252,13 @@
             } else {
                 renderPage(num);
             }
+        }
+
+        // Function to go back to the home page
+        function goHome() {
+            document.getElementById('pdf-viewer').style.display = 'none';
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none'; // Hide error message on return
         }
     </script>
 </body>
