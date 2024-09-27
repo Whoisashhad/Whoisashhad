@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashhad ke Khaaake</title>
+    <title>Ashhad ke Khaake - PDF Reader</title> <!-- Updated title -->
 
     <!-- Add the CSS styles here -->
     <style>
@@ -13,7 +13,7 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #D9C69F; /* Jotun papyrus */
+            background-color: #D9C69F; /* Updated background color */
             color: #333;
             text-align: center;
         }
@@ -110,123 +110,19 @@
             height: 24px;
             margin-right: 8px;
         }
+
+        /* Heading for currently reading PDF */
+        #current-pdf-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
 
     <!-- Your landing page buttons -->
     <div id="landing-page" class="landing">
-        <h1>Select a PDF to View</h1>
-        <button onclick="selectPDF('Kumail.pdf')">Kumail</button>
-        <button onclick="selectPDF('yellow_line.pdf')">Yellow Line</button>
-        <div id="error-message" class="error-message" style="display:none;"></div>
-    </div>
-
-    <!-- PDF Viewer Section -->
-    <div id="pdf-viewer" style="display:none;">
-        <canvas id="pdf-canvas"></canvas>
-        <div class="controls">
-            <button id="prev-page">Previous Page</button>
-            <span>Page: <span id="page-num"></span> / <span id="page-count"></span></span>
-            <button id="next-page">Next Page</button>
-        </div>
-
-        <!-- Social media and contact section -->
-        <div class="social-media">
-            <a href="mailto:example@example.com">
-                <img src="https://img.icons8.com/material-outlined/24/000000/new-post.png" alt="Email">
-                Email
-            </a>
-            <a href="https://www.instagram.com/yourprofile" target="_blank">
-                <img src="https://img.icons8.com/material-outlined/24/000000/instagram-new.png" alt="Instagram">
-                Instagram
-            </a>
-            <a href="https://twitter.com/yourprofile" target="_blank">
-                <img src="https://img.icons8.com/material-outlined/24/000000/twitter.png" alt="Twitter">
-                Twitter
-            </a>
-        </div>
-    </div>
-
-    <!-- JavaScript and PDF.js logic goes in the body -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <script>
-        let pdfDoc = null,
-            pageNum = 1,
-            pageRendering = false,
-            pageNumPending = null,
-            scale = 1.5,
-            canvas = document.getElementById('pdf-canvas'),
-            ctx = canvas.getContext('2d');
-
-        function selectPDF(pdfFile) {
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('pdf-viewer').style.display = 'block';
-            loadPDF(pdfFile);
-        }
-
-        function loadPDF(url) {
-            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-                pdfDoc = pdfDoc_;
-                document.getElementById('page-count').textContent = pdfDoc.numPages;
-                renderPage(pageNum);
-            }).catch(function(error) {
-                document.getElementById('landing-page').style.display = 'block';
-                document.getElementById('pdf-viewer').style.display = 'none';
-                document.getElementById('error-message').innerHTML = "The title you are looking for has either not been completed or the manuscript has been lost again. Please be patient, it’ll turn up like Luna’s belongings.";
-                document.getElementById('error-message').style.display = 'block';
-            });
-        }
-
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                let viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                let renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                let renderTask = page.render(renderContext);
-
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-
-            document.getElementById('page-num').textContent = num;
-        }
-
-        document.getElementById('prev-page').addEventListener('click', function() {
-            if (pageNum <= 1) {
-                return;
-            }
-            pageNum--;
-            queueRenderPage(pageNum);
-        });
-
-        document.getElementById('next-page').addEventListener('click', function() {
-            if (pageNum >= pdfDoc.numPages) {
-                return;
-            }
-            pageNum++;
-            queueRenderPage(pageNum);
-        });
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-    </script>
-</body>
-</html>
+        <h1>Ashhad ke Khaake</h1> <!-- Updated main heading -->
+        <h2>Select a PDF to View</h2>
+        <button onclick="selectPDF('Kumail.pdf')">Kumail​⬤
