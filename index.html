@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+        .controls {
+            text-align: center;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+        }
+        span {
+            font-size: 18px;
+        }
+        .landing {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .landing button {
+            margin: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page with Options -->
+    <div id="landing-page" class="landing">
+        <h1>Select a PDF to View</h1>
+        <button onclick="selectPDF('Kumail.pdf')">Kumail</button>
+        <button onclick="selectPDF('yellow_line.pdf')">Yellow Line</button>
+    </div>
+
+    <!-- PDF Viewer Section -->
+    <div id="pdf-viewer" style="display:none;">
+        <canvas id="pdf-canvas"></canvas>
+        <div class="controls">
+            <button id="prev-page">Previous Page</button>
+            <span>Page: <span id="page-num"></span> / <span id="page-count"></span></span>
+            <button id="next-page">Next Page</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        let pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.5,   // Scale of the PDF pages
+            canvas = document.getElementById('pdf-canvas'),
+            ctx = canvas.getContext('2d');
+
+        // Function to load the selected PDF
+        function selectPDF(pdfFile) {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('pdf-viewer').style.display = 'block';
+            loadPDF(pdfFile);
+        }
+
+        // Load the PDF file
+        function loadPDF(url) {
+            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                renderPage(pageNum);
+            });
+        }
+
+        // Render the current page
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                let viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                let renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                let renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        }
+
+        // Queue the rendering of the next page
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        // Handle Previous Page
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        });
+
+        // Handle Next Page
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        });
+    </script>
+</body>
+</html>
