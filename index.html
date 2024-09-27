@@ -16,6 +16,13 @@
             background-color: #D9C69F; /* Updated background color */
             color: #333;
             text-align: center;
+            overflow: hidden; /* Hide overflow to prevent scrolling */
+        
+            /* Add these lines to disable text selection */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* Internet Explorer/Edge */
+            user-select: none;         /* Non-prefixed version */
         }
 
         button {
