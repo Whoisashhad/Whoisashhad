@@ -1,51 +1,125 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashhad? What's that?</title>
+    <title>PDF Viewer</title>
+
+    <!-- Add the CSS styles here -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        canvas {
-            display: block;
-            margin: 20px auto;
-            border: 1px solid black;
-        }
-        .controls {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             text-align: center;
         }
+
         button {
-            margin: 5px;
-            padding: 10px;
-        }
-        span {
-            font-size: 18px;
-        }
-        .landing {
-            text-align: center;
-            margin-top: 50px;
-        }
-        .landing button {
             margin: 20px;
             padding: 15px 30px;
             font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007BFF;
+            color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
         .error-message {
-            color: red;
-            text-align: center;
+            color: #ff4d4d;
+            background-color: #ffe5e5;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
             font-size: 18px;
             margin-top: 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .controls button:hover {
+            background-color: #218838;
+        }
+
+        .controls span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        span {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* Styling for the social media section */
+        .social-media {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-media a {
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            transition: color 0.3s ease;
+        }
+
+        .social-media a:hover {
+            color: #007BFF; /* Change color on hover */
+        }
+
+        /* Icons (optional) */
+        .social-media a img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Landing Page with Options -->
+    <!-- Your landing page buttons -->
     <div id="landing-page" class="landing">
         <h1>Select a PDF to View</h1>
         <button onclick="selectPDF('Kumail.pdf')">Kumail</button>
@@ -63,32 +137,46 @@
         </div>
     </div>
 
+    <!-- Social media and contact section -->
+    <div class="social-media">
+        <a href="mailto:">
+            <img src="https://img.icons8.com/material-outlined/24/000000/new-post.png" alt="Email">
+            Email
+        </a>
+        <a href="https://www.instagram.com/syed_ashhad" target="_blank">
+            <img src="https://img.icons8.com/material-outlined/24/000000/instagram-new.png" alt="Instagram">
+            Instagram
+        </a>
+        <a href="https://twitter.com/syedashhad" target="_blank">
+            <img src="https://img.icons8.com/material-outlined/24/000000/twitter.png" alt="Twitter">
+            Twitter
+        </a>
+    </div>
+
+    <!-- JavaScript and PDF.js logic goes in the body -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
         let pdfDoc = null,
             pageNum = 1,
             pageRendering = false,
             pageNumPending = null,
-            scale = 1.5,   // Scale of the PDF pages
+            scale = 1.5,
             canvas = document.getElementById('pdf-canvas'),
             ctx = canvas.getContext('2d');
 
-        // Function to load the selected PDF
         function selectPDF(pdfFile) {
-            document.getElementById('error-message').style.display = 'none';  // Hide error message
+            document.getElementById('error-message').style.display = 'none';
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('pdf-viewer').style.display = 'block';
             loadPDF(pdfFile);
         }
 
-        // Load the PDF file
         function loadPDF(url) {
             pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
                 pdfDoc = pdfDoc_;
                 document.getElementById('page-count').textContent = pdfDoc.numPages;
                 renderPage(pageNum);
             }).catch(function(error) {
-                // Show error message if the file doesn't load
                 document.getElementById('landing-page').style.display = 'block';
                 document.getElementById('pdf-viewer').style.display = 'none';
                 document.getElementById('error-message').innerHTML = "The title you are looking for has either not been completed or the manuscript has been lost again. Please be patient, it’ll turn up like Luna’s belongings.";
@@ -96,7 +184,6 @@
             });
         }
 
-        // Render the current page
         function renderPage(num) {
             pageRendering = true;
             pdfDoc.getPage(num).then(function(page) {
@@ -122,16 +209,6 @@
             document.getElementById('page-num').textContent = num;
         }
 
-        // Queue the rendering of the next page
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-
-        // Handle Previous Page
         document.getElementById('prev-page').addEventListener('click', function() {
             if (pageNum <= 1) {
                 return;
@@ -140,7 +217,6 @@
             queueRenderPage(pageNum);
         });
 
-        // Handle Next Page
         document.getElementById('next-page').addEventListener('click', function() {
             if (pageNum >= pdfDoc.numPages) {
                 return;
@@ -148,6 +224,14 @@
             pageNum++;
             queueRenderPage(pageNum);
         });
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
     </script>
 </body>
 </html>
